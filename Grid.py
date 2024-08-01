@@ -1,74 +1,102 @@
 import numpy as np
 from Cell import Cell
 
+
 class Grid:
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, rules):
         self.width = width
         self.height = height
 
+        self.rules = rules
+        self.search_shape = self.rules.search_shape
+
         self.create_grid()
+        self.get_cell_neighbors()
+        
 
     def create_grid(self):
         """
-            create_grid: Function to create a numpy array of the specificed grid size where each element is a Cell object
+            Grid.create_grid: Function to create a numpy array of the specificed grid size where each element is a Cell object
         """
         grid = np.empty((self.height, self.width), dtype=Cell)
         for row in range(self.height):
             for col in range(self.width):
-                grid[row][col] = Cell((row, col))
+                grid[row][col] = Cell(row, col)
         self.grid = grid
 
-    def set_cell_search_area(
-            self, 
-            search_shape: str, 
-            # Rect
-            rect_search_y=None,
-            rect_search_x=None,
-            # Custom rect
-            custom_rect_search_left=None, 
-            custom_rect_search_right=None, 
-            custom_rect_search_up=None, 
-            custom_rect_search_down=None,
-            # Circle
-            radius=None, 
-            ):
-        
+
+    def get_cell_neighbors(self):
         """
-            set_cell_search_area: Function to set the area around each cell to check 
-
-            Parameters:
-                - search_shape: the shape of the area to search around a cell - one of 'rect', 'custom_rect', 'circle'
-                
-                ## For search_shape='rect'
-                - rect_search_y: the number of cells above and below of each cell to check 
-                - rect_search_x: the number of cells to the left and right of a given cell to check
-                ## For search_shape='custom_rect'
-                - custom_rect_search_left: the number of cells to the left of each cell to check
-                - custom_rect_search_right: the number of cells to the right of each cell to check
-                - custom_rect_search_up: the number of cells above each cell to check
-                - custom_rect_search_down: the number of cells below each cell to check
-                ## For search_shape='circle'
-                - radius: the radius of the circle around each cell to check
+            Grid.get_cell_neighbors: Method to add array of neighbors to each cell
         """
-        
-        self.search_shape = search_shape
 
-        if self.search_shape == 'rect':
-            self.rect_search_y = rect_search_y
-            self.rect_search_x = rect_search_x
-        elif self.search_shape == 'custom_rect':
-            self.custom_rect_search_left = custom_rect_search_left
-            self.custom_rect_search_right = custom_rect_search_right
-            self.custom_rect_search_up = custom_rect_search_up
-            self.custom_rect_search_down = custom_rect_search_down
-        elif self.search_shape == 'circle':
-            self.radius = radius
-        else:
-            raise ValueError("Invalid search shape")
+        def get_rect_neighbors(grid, cell, rect_search_y, rect_search_x):
+            cells_in_search_area = []
 
+            # Get indices below cell
+            for plus_y in range(rect_search_y):
+                new_row_inx = cell.row + plus_y+1
+                # Ensure not out of bounds
+                if new_row_inx > self.grid.shape[0]: break
+                cells_in_search_area.append((new_row_inx, cell.col))
+
+            # Get indices above cell
+            for minus_y in range(rect_search_y):
+                new_row_inx = cell.row - minus_y-1
+                # Ensure not out of bounds
+                if new_row_inx < 0: break
+                cells_in_search_area.append((new_row_inx, cell.col))
+
+            # Get indices to the left of cell
+            for minus_x in range(rect_search_x):
+                new_col_inx = cell.col - minus_x-1
+                # Ensure not out of bounds
+                if new_col_inx < 0: break
+                cells_in_search_area.append((cell.row, new_col_inx))
+
+            # Get indices to the right of cell
+            for plus_x in range(rect_search_x):
+                new_col_inx = cell.col + plus_x+1
+                # Ensure not out of bounds
+                if new_col_inx > self.grid.shape[1]: break
+                cells_in_search_area.append((cell.row, new_col_inx))
+
+            raise Exception
+            #############################
+            # LEFT OFF HERE - NEED TO GET CORNER NEIGHBORS
+            #############################
+
+            return cells_in_search_area
+
+        # Go through each cell and create a list of the cells in their serach area
+        for row_inx in range(self.grid.shape[0]):
+            for col_inx in range(self.grid[row_inx].shape[0]):
+                cell = self.grid[row_inx][col_inx]
+                if self.search_shape == 'rect':
+                    cells_in_search_area = get_rect_neighbors(self.grid, cell, self.rules.rect_search_y, self.rules.rect_search_x)
+
+                elif self.search_shape == 'custom_rect':
+                    raise NotImplementedError
+                elif self.search_shape == 'circle':
+                    raise NotImplementedError
+                else:
+                    raise ValueError("Invalid search shape")
+
+                cell.neighbors = cells_in_search_area
+                    
 
     def check_cell_search_area(self, cell: Cell) -> bool:
         """
-            check_cell_search_area: Function to check the area in the grid around the provided cell and return True
+            Grid.check_cell_search_area: Function to check the area in the grid around the provided cell and return True
         """
         pass
+
+
+    def update(self):
+        """
+            Grid.update_grid: Method to perform the Game of Life updates
+        """
+        # Go through each cell and check their list of neighbors
+        for row_inx in range(self.grid.shape[0]):
+            for col_inx in range(self.grid[row_inx].shape[0]):
+                cell = self.grid[row_inx][col_inx]

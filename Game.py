@@ -8,8 +8,7 @@ from Grid import Grid
 
 class GameOfLife:
     def __init__(self, grid_width, grid_height, rules, cell_size=25):
-        self.grid = Grid(grid_width, grid_height)
-        self.rules = rules
+        self.grid = Grid(grid_width, grid_height, rules)
 
         self.cell_size = cell_size
 
@@ -32,6 +31,9 @@ class GameOfLife:
             cellCol = int(np.floor(mouseX/self.cell_size))
             clicked_cell = self.grid.grid[cellRow][cellCol]
             clicked_cell.is_alive = not clicked_cell.is_alive
+
+            # TMP
+            print(clicked_cell.neighbors)
 
         def mouse_callback(event, x, y, flags, param):
             if event == cv.EVENT_LBUTTONDOWN:
@@ -58,12 +60,6 @@ class GameOfLife:
 
         self.display = display
 
-    def update_grid(self):
-        """
-            GameOfLife.update_grid: Method to perform the Game of Life updates
-        """
-        pass
-
     def run(self):     
         """
             GameOfLife.run: Method to start running Conway's Game of Life
@@ -83,7 +79,7 @@ class GameOfLife:
 
             cv.imshow(self.windowname, self.display)
 
-            self.update_grid()
+            self.grid.update()
 
             key = cv.waitKey(1)
             if key == ord('q'): 

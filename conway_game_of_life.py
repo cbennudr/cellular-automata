@@ -12,7 +12,10 @@ if __name__ == '__main__':
     rules = Rules(
         min_neighbors_to_stay_alive=    2,
         max_neighbors_to_stay_alive=    3,
-        min_neighbors_to_come_alive=    3
+        min_neighbors_to_come_alive=    3,
+        search_shape=                   'rect',
+        rect_search_x=                  1,
+        rect_search_y=                  1
     )
 
     Life = GameOfLife(
