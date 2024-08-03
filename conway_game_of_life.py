@@ -21,7 +21,8 @@ if __name__ == '__main__':
     Life = GameOfLife(
         grid_width=     args.grid_width,
         grid_height=    args.grid_height,
-        rules=          rules
+        rules=          rules,
+        cell_size=      70
     )
     Life.run()
 

@@ -31,40 +31,46 @@ class Grid:
         """
 
         def get_rect_neighbors(grid, cell, rect_search_y, rect_search_x):
+            """
+                get_rect_neighbors: Function for getting all of the neighboring cells of a cell when searching a rectangular area
+            """
             cells_in_search_area = []
-
-            # Get indices below cell
-            for plus_y in range(rect_search_y):
-                new_row_inx = cell.row + plus_y+1
-                # Ensure not out of bounds
-                if new_row_inx > self.grid.shape[0]: break
-                cells_in_search_area.append((new_row_inx, cell.col))
-
-            # Get indices above cell
-            for minus_y in range(rect_search_y):
-                new_row_inx = cell.row - minus_y-1
-                # Ensure not out of bounds
-                if new_row_inx < 0: break
-                cells_in_search_area.append((new_row_inx, cell.col))
-
-            # Get indices to the left of cell
-            for minus_x in range(rect_search_x):
-                new_col_inx = cell.col - minus_x-1
-                # Ensure not out of bounds
-                if new_col_inx < 0: break
-                cells_in_search_area.append((cell.row, new_col_inx))
-
-            # Get indices to the right of cell
-            for plus_x in range(rect_search_x):
-                new_col_inx = cell.col + plus_x+1
-                # Ensure not out of bounds
-                if new_col_inx > self.grid.shape[1]: break
-                cells_in_search_area.append((cell.row, new_col_inx))
-
-            raise Exception
-            #############################
-            # LEFT OFF HERE - NEED TO GET CORNER NEIGHBORS
-            #############################
+            cur_cell_pos = (cell.row, cell.col)
+            # Right/Down
+            for plus_x in range(rect_search_x+1):
+                new_col_inx = cell.col + plus_x
+                if new_col_inx > self.grid.shape[1]: continue
+                for plus_y in range(rect_search_y+1):
+                    new_row_inx = cell.row + plus_y
+                    if new_row_inx > self.grid.shape[0]: continue
+                    cells_in_search_area.append((new_row_inx, new_col_inx))
+            # Right/Up
+            for plus_x in range(rect_search_x+1):
+                new_col_inx = cell.col + plus_x
+                if new_col_inx > self.grid.shape[1]: continue
+                for minus_y in range(rect_search_y+1):
+                    new_row_inx = cell.row - minus_y
+                    if new_row_inx < 0: continue
+                    cells_in_search_area.append((new_row_inx, new_col_inx))
+            # Left/Down
+            for minus_x in range(rect_search_x+1):
+                new_col_inx = cell.col - minus_x
+                if new_col_inx < 0: continue
+                for plus_y in range(rect_search_y+1):
+                    new_row_inx = cell.row + plus_y
+                    if new_row_inx > self.grid.shape[0]: continue
+                    cells_in_search_area.append((new_row_inx, new_col_inx))
+            # Left/Up 
+            for minus_x in range(rect_search_x+1):
+                new_col_inx = cell.col - minus_x
+                if new_col_inx < 0: continue
+                for minus_y in range(rect_search_y+1):
+                    new_row_inx = cell.row - minus_y
+                    if new_row_inx < 0: continue
+                    cells_in_search_area.append((new_row_inx, new_col_inx))
+            
+            # Remove duplicates and the cell being searched for
+            cells_in_search_area = sorted([pt for pt in set(cells_in_search_area) if pt != cur_cell_pos])
 
             return cells_in_search_area
 

@@ -33,7 +33,7 @@ class GameOfLife:
             clicked_cell.is_alive = not clicked_cell.is_alive
 
             # TMP
-            print(clicked_cell.neighbors)
+            print(f"{(clicked_cell.row, clicked_cell.col)}: {clicked_cell.neighbors}")
 
         def mouse_callback(event, x, y, flags, param):
             if event == cv.EVENT_LBUTTONDOWN:
@@ -76,6 +76,7 @@ class GameOfLife:
                     cell = self.grid.grid[row_inx][col_inx]
                     if cell.is_alive: cv.rectangle(self.display, pt1, pt2, self.alive_cell_color, -1)
                     else: cv.rectangle(self.display, pt1, pt2, self.dead_cell_color, -1)
+                    cv.putText(self.display, f"{row_inx},{col_inx}", (pt1[0], int(pt1[1]+self.cell_size/2)), cv.FONT_HERSHEY_COMPLEX_SMALL, .5, (255,0,255), 1)
 
             cv.imshow(self.windowname, self.display)
 
