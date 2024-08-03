@@ -7,6 +7,7 @@ class Rules:
             min_neighbors_to_stay_alive, 
             max_neighbors_to_stay_alive, 
             min_neighbors_to_come_alive,
+            max_neighbors_to_come_alive,
 
             search_shape: str, 
             # Rect
@@ -42,9 +43,11 @@ class Rules:
                 ## For search_shape='circle'
                 - circle_radius: the radius of the circle around each cell to check
         """
-        self.min_neighbors_to_stay_alive = min_neighbors_to_stay_alive
-        self.max_neighbors_to_stay_alive = max_neighbors_to_stay_alive
-        self.min_neighbors_to_come_alive = min_neighbors_to_come_alive
+        # Handle no min/max neighbors by setting to number that will always pass condition (see Grid.check_cell_search_area())
+        self.min_neighbors_to_stay_alive = min_neighbors_to_stay_alive if min_neighbors_to_stay_alive != None else -1
+        self.max_neighbors_to_stay_alive = max_neighbors_to_stay_alive if max_neighbors_to_stay_alive != None else 9999
+        self.min_neighbors_to_come_alive = min_neighbors_to_come_alive if min_neighbors_to_come_alive != None else -1
+        self.max_neighbors_to_come_alive = max_neighbors_to_come_alive if max_neighbors_to_come_alive != None else 9999
         
         self.search_shape = search_shape
 

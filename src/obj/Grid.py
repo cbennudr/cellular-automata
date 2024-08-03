@@ -1,5 +1,5 @@
 import numpy as np
-from Cell import Cell
+from src.obj.Cell import Cell
 
 
 class Grid:
@@ -106,7 +106,6 @@ class Grid:
             neighboring_cells_states.append(self.grid[row][col].is_alive)
 
         alive_neighbors, dead_neighbors = neighboring_cells_states.count(True), neighboring_cells_states.count(False)
-        
         # If cell is alive, check whether it will die or stay alive
         if cell.is_alive:
             if (alive_neighbors >= self.rules.min_neighbors_to_stay_alive) and (alive_neighbors <= self.rules.max_neighbors_to_stay_alive):
@@ -115,7 +114,7 @@ class Grid:
                 return False
         # If cell is dead, check if it is able to come alive
         else:
-            if (alive_neighbors >= self.rules.min_neighbors_to_come_alive):
+            if (alive_neighbors >= self.rules.min_neighbors_to_come_alive) and (alive_neighbors <= self.rules.max_neighbors_to_come_alive):
                 return True
             else:
                 return False

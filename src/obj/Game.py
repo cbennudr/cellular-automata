@@ -1,8 +1,7 @@
 
 import cv2 as cv
 import numpy as np
-from Grid import Grid
-from time import sleep
+from src.obj.Grid import Grid
 
         
 
