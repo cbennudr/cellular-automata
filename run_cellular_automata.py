@@ -14,9 +14,20 @@ if __name__ == '__main__':
     ################################################################################
 
     ################################################################################
-    ''' RULES '''
+    ''' PRESET RULES '''
     parser.add_argument('--conway', dest='conway', action='store_true', required=False, default=False, help="Use rules for Conway's Game of Life")
     parser.add_argument('--super_breeder_conway', dest='super_breeder_conway', action='store_true', required=False, default=False, help="Use rules for Conway's Game of Life with no maximum number of alive neighbors for a dead cell to come alive")
+    ################################################################################
+
+    ################################################################################
+    ''' CUSTOM RULES '''
+    parser.add_argument('--min_neighbors_to_stay_alive', dest='min_neighbors_to_stay_alive', action='store', required=False, default=None, help="")
+    parser.add_argument('--max_neighbors_to_stay_alive', dest='max_neighbors_to_stay_alive', action='store', required=False, default=None, help="")
+    parser.add_argument('--min_neighbors_to_come_alive', dest='min_neighbors_to_come_alive', action='store', required=False, default=None, help="")
+    parser.add_argument('--max_neighbors_to_come_alive', dest='max_neighbors_to_come_alive', action='store', required=False, default=None, help="")
+    parser.add_argument('--search_shape', dest='search_shape', action='store', required=False, default=None, help="")
+    parser.add_argument('--rect_search_x', dest='rect_search_x', action='store', required=False, default=None, help="")
+    parser.add_argument('--rect_search_y', dest='rect_search_y', action='store', required=False, default=None, help="")
     ################################################################################
 
     ################################################################################
