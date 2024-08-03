@@ -97,10 +97,17 @@ class GameOfLife:
             # Pause/unpause
             if key == ord(' '):
                 paused = not paused
+                print("Paused" if paused else "Running")
             # Reset the game
             if key == ord('c'):
+                print("Restarting")
                 running = False
                 self.__init__(self.grid_width, self.grid_height, self.rules, self.display_settings)
                 self.run()
+            # Step
+            if key == 0:
+                print("Step")
+                paused = True
+                self.grid.update()
 
         cv.destroyAllWindows()
