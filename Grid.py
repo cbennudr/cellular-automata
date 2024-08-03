@@ -39,15 +39,15 @@ class Grid:
             # Right/Down
             for plus_x in range(rect_search_x+1):
                 new_col_inx = cell.col + plus_x
-                if new_col_inx > self.grid.shape[1]: continue
+                if new_col_inx >= self.grid.shape[1]: continue
                 for plus_y in range(rect_search_y+1):
                     new_row_inx = cell.row + plus_y
-                    if new_row_inx > self.grid.shape[0]: continue
+                    if new_row_inx >= self.grid.shape[0]: continue
                     cells_in_search_area.append((new_row_inx, new_col_inx))
             # Right/Up
             for plus_x in range(rect_search_x+1):
                 new_col_inx = cell.col + plus_x
-                if new_col_inx > self.grid.shape[1]: continue
+                if new_col_inx >= self.grid.shape[1]: continue
                 for minus_y in range(rect_search_y+1):
                     new_row_inx = cell.row - minus_y
                     if new_row_inx < 0: continue
@@ -58,7 +58,7 @@ class Grid:
                 if new_col_inx < 0: continue
                 for plus_y in range(rect_search_y+1):
                     new_row_inx = cell.row + plus_y
-                    if new_row_inx > self.grid.shape[0]: continue
+                    if new_row_inx >= self.grid.shape[0]: continue
                     cells_in_search_area.append((new_row_inx, new_col_inx))
             # Left/Up 
             for minus_x in range(rect_search_x+1):
@@ -93,9 +93,32 @@ class Grid:
 
     def check_cell_search_area(self, cell: Cell) -> bool:
         """
-            Grid.check_cell_search_area: Function to check the area in the grid around the provided cell and return True
+            Grid.check_cell_search_area: Method to check the area in the grid around the provided cell and return whether or not the cell should be alive on the next update
+
+            Returns
+                True if the cell should be alive on next update
+                False if the cell should be dead on next update
         """
-        pass
+        # Create array of alive/dead bools for neighbor cells
+        neighboring_cells_states = []
+        for neighbor_cell_pos in cell.neighbors:
+            row, col = neighbor_cell_pos
+            neighboring_cells_states.append(self.grid[row][col].is_alive)
+
+        alive_neighbors, dead_neighbors = neighboring_cells_states.count(True), neighboring_cells_states.count(False)
+        
+        # If cell is alive, check whether it will die or stay alive
+        if cell.is_alive:
+            if (alive_neighbors >= self.rules.min_neighbors_to_stay_alive) and (alive_neighbors <= self.rules.max_neighbors_to_stay_alive):
+                return True
+            else:
+                return False
+        # If cell is dead, check if it is able to come alive
+        else:
+            if (alive_neighbors >= self.rules.min_neighbors_to_come_alive):
+                return True
+            else:
+                return False
 
 
     def update(self):
@@ -106,3 +129,10 @@ class Grid:
         for row_inx in range(self.grid.shape[0]):
             for col_inx in range(self.grid[row_inx].shape[0]):
                 cell = self.grid[row_inx][col_inx]
+                alive_on_next_update = self.check_cell_search_area(cell)
+                cell.history.append(alive_on_next_update)
+        # Only update cell state after all cells have had their positions checked
+        for row_inx in range(self.grid.shape[0]):
+            for col_inx in range(self.grid[row_inx].shape[0]):
+                cell = self.grid[row_inx][col_inx]
+                cell.is_alive = cell.history[-1]
